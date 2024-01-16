@@ -1,0 +1,13 @@
+{
+    "$schema": "https://raw.githubusercontent.com/DanielGavin/ols/master/misc/ols.schema.json",
+    "collections": [
+        {
+            "name": "core",
+            "path": "/vscode/bin/linux-x64/0ee08df0cf4527e40edc9aa28f4b5bd38bbff2b2/core"
+        }
+    ],
+    "enable_document_symbols": true,
+    "enable_semantic_tokens": false,
+    "enable_hover": true,
+    "enable_snippets": true
+}
