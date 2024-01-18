@@ -65,12 +65,12 @@ threads : [dynamic]^thread.Thread;
 
 @(init)
 create_thread_pool :: proc() {
-    threads := make([dynamic]^thread.Thread, 0);
-    thread_cleaner();
+  threads := make([dynamic]^thread.Thread, 0);
+  thread_cleaner();
 }
 
 destroy_thread_pool :: proc() {
-    delete(threads);
+  delete(threads);
 }
 
 thread_cleaner :: proc() {
@@ -82,19 +82,19 @@ thread_cleaner :: proc() {
         continue;
       }
 
-			for i := 0; i < len(threads); {
-				if t := threads[i]; thread.is_done(t) {
-					fmt.printf("Thread %d is done\n", t.user_index);
-					t.data = nil;
-					thread.destroy(t);
+      for i := 0; i < len(threads); {
+        if t := threads[i]; thread.is_done(t) {
+          fmt.printf("Thread %d is done\n", t.user_index);
+          t.data = nil;
+          thread.destroy(t);
 
-					ordered_remove(&threads, i);
-				}
-				else {
+          ordered_remove(&threads, i);
+        }
+        else {
           i += 1;
         }
-			}
-		}
+      }
+    }
   });
   thread.start(t);
 }
