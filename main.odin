@@ -61,6 +61,38 @@ main :: proc() {
   }
 }
 
+handle_client :: proc(client: ^Client) {
+  buffer_size :: 10240;
+  read_buffer : [buffer_size]byte = [buffer_size]byte{};
+  bytes_read : int = 0;
+
+  err : net.Network_Error = nil;
+
+  for {
+    bytes_read, err = net.recv_tcp(client.socket, read_buffer[:]);
+
+    if err != nil {
+      fmt.println("Error reading from socket: ", err);
+      break;
+    }
+
+    if bytes_read == 0 {
+      break;
+    }
+
+    net.send_tcp(client.socket, []u8{'o', 'k', '\n'});
+    fmt.println("Received message from ", client.endpoint_as_string, ":", string(read_buffer[:]));
+  }
+
+  fmt.println("Closing connection with ", client.endpoint_as_string);
+  net.close(client.socket);
+}
+
+
+/*
+  THREAD CONTROL
+*/
+
 threads : [dynamic]^thread.Thread;
 
 @(init)
@@ -97,32 +129,4 @@ thread_cleaner :: proc() {
     }
   });
   thread.start(t);
-}
-
-
-handle_client :: proc(client: ^Client) {
-  buffer_size :: 10240;
-  read_buffer : [buffer_size]byte = [buffer_size]byte{};
-  bytes_read : int = 0;
-
-  err : net.Network_Error = nil;
-
-  for {
-    bytes_read, err = net.recv_tcp(client.socket, read_buffer[:]);
-
-    if err != nil {
-      fmt.println("Error reading from socket: ", err);
-      break;
-    }
-
-    if bytes_read == 0 {
-      break;
-    }
-
-    net.send_tcp(client.socket, []u8{'o', 'k', '\n'});
-    fmt.println("Received message from ", client.endpoint_as_string, ":", string(read_buffer[:]));
-  }
-
-  fmt.println("Closing connection with ", client.endpoint_as_string);
-  net.close(client.socket);
 }
